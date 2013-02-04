@@ -155,4 +155,4 @@ custom
 kernel_grub
 unmount
 
-#reboot
+reboot
