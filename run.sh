@@ -84,9 +84,6 @@ install () {
 custom () {
 	DEST_MOUNT="/mnt"
 	BLKID="blkid"
-	DEV_BOOT="/dev/cciss/c0d0p2"
-	DEV_SWAP="/dev/cciss/c0d0p3"
-	DEV_SLASH="/dev/cciss/c0d0p4"
 
 	# configure loopback
 	echo -e "auto lo\niface lo inet loopback" > $DEST_MOUNT/etc/network/interfaces
@@ -114,10 +111,13 @@ deb-src http://security.debian.org/ squeeze/updates main contrib non-free
 # squeeze-updates, previously known as 'volatile'
 deb http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free
 deb-src http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free" > $DEST_MOUNT/etc/apt/sources.list
+UUID_BOOT=`$BLKID -t LABEL=boot -o list | awk ' $3 ~ "boot" {print $5}'`
+UUID_SWAP=`$BLKID -t LABEL=swap -o list | awk ' $3 ~ "swap" {print $6}'`
+UUID_SLASH=`$BLKID -t LABEL=slash -o list | awk ' $3 ~ "slash" {print $5}'`
 
-	echo "UUID=$($BLKID -t LABEL=boot -o list | awk ' $3 ~ "boot" {print $5}') /boot	ext3	defaults			0 1
-UUID=$($BLKID -t LABEL=swap -o list | awk ' $3 ~ "swap" {print $6}') none	swap	sw				0 0
-UUID=$($BLKID -t LABEL=slash -o list | awk ' $3 ~ "slash" {print $5}') /	ext4	relatime,errors=remount-ro	0 1" > /mnt/etc/fstab
+	echo "UUID=${UUID_BOOT} /boot	ext3	defaults			0 1
+UUID=${UUID_SWAP} none	swap	sw				0 0
+UUID=${UUID_SLASH} /	ext4	relatime,errors=remount-ro	0 1" > /mnt/etc/fstab
 sleep 60
 }
 
