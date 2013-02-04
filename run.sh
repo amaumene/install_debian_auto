@@ -115,9 +115,10 @@ deb-src http://security.debian.org/ squeeze/updates main contrib non-free
 deb http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free
 deb-src http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free" > $DEST_MOUNT/etc/apt/sources.list
 
-	echo "UUID=$($BLKID $DEV_BOOT -t LABEL=boot -o list | awk ' $3 ~ "boot" {print $5}') /boot	ext3	defaults			0 1
-UUID=$($BLKID $DEV_SWAP -t LABEL=swap -o list | awk ' $3 ~ "swap" {print $6}') none	swap	sw				0 0
-UUID=$($BLKID $DEV_SLASH -t LABEL=slash -o list | awk ' $3 ~ "slash" {print $5}') /	ext4	relatime,errors=remount-ro	0 1" > /mnt/etc/fstab
+	echo "UUID=$($BLKID -t LABEL=boot -o list | awk ' $3 ~ "boot" {print $5}') /boot	ext3	defaults			0 1
+UUID=$($BLKID -t LABEL=swap -o list | awk ' $3 ~ "swap" {print $6}') none	swap	sw				0 0
+UUID=$($BLKID -t LABEL=slash -o list | awk ' $3 ~ "slash" {print $5}') /	ext4	relatime,errors=remount-ro	0 1" > /mnt/etc/fstab
+sleep 60
 }
 
 kernel_grub () {
