@@ -125,10 +125,12 @@ kernel_grub () {
     mount -o bind /dev $DEST_MOUNT/dev
     mount -o bind /sys $DEST_MOUNT/sys
     chroot $DEST_MOUNT aptitude update
-    DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install linux-image-amd64 firmware-bnx2 grub-pc openssh-server -y
+    DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install linux-image-amd64 firmware-bnx2 grub-pc openssh-server locales -y
     chroot $DEST_MOUNT grub-install --recheck --no-floppy /dev/cciss/c0d0
     chroot $DEST_MOUNT grub-mkconfig -o /boot/grub/grub.cfg
     chroot $DEST_MOUNT echo "root:toto" | chpasswd
+    sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8' $DEST_MOUNT/etc/locale.gen
+    chroot DEST_MOUNT locale-gen
     mkdir -p $DEST_MOUNT/root/.ssh
     echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAslaQRTlW1a5EXyFw9Y158MOfoajW8dzUwo31tzHHbRx84ZXiI+/3PpLmn5yoLeJHHPRFgqU6UV5z4/iB9vxO8exMwCjnYuIO/02twK8gIvIRL3mzwaLa4fHXCBW3XZwi5YDZ+nU3t0G6XxWo8hfgiVauLfxdFMuuu8qAU79bZzvB3NLj4WcqN+dK3uomF7VB/0eZxkBZ9HXJOr5QV+oZQUv6S9L43450AkDu72aCl5g1jCp3LaHVBBzwXPReeExnQYOQ25M8lSye7CtwIc7HtnHmnHkmgsBKSsavnDXp6oJ86IAbDP3kKPq8t3I/ZkWEuAHnuGcxEcQG7mTJ7+M/ow== root@pxe" > $DEST_MOUNT/root/.ssh/authorized_keys
     umount $DEST_MOUNT/sys
