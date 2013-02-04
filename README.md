@@ -1,4 +1,4 @@
-install_debian_auto
+# install_debian_auto
 ===================
 
-My prod script to auto-install a Debian
+My prod script to auto-install a Debian.
