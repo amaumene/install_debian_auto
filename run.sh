@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -x 
 delete_raid_hp () {
 	HPACUCLI="hpacucli"
 	ID=`$HPACUCLI ctrl all show | awk '{ print $6 }'`
@@ -89,13 +89,13 @@ custom () {
 	DEV_SLASH="/dev/cciss/c0d0p4"
 
 	# configure loopback
-	echo "auto lo\niface lo inet loopback" > $DEST_MOUNT/etc/network/interfaces
+	echo -e "auto lo\niface lo inet loopback" > $DEST_MOUNT/etc/network/interfaces
 
 	# configure all interfaces to dhcp
 	i=0
 	while [ $i -ne "$(ip l | grep state | wc -l)" ]
 	do
-		echo "allow-hotplug eth$i\niface eth$i inet dhcp" >> $DEST_MOUNT/etc/network/interfaces
+		echo -e "allow-hotplug eth$i\niface eth$i inet dhcp" >> $DEST_MOUNT/etc/network/interfaces
 		i=`expr $i + 1`
 	done
 
