@@ -1,5 +1,4 @@
 #!/bin/sh
-set -x 
 delete_raid_hp () {
 	HPACUCLI="hpacucli"
 	ID=`$HPACUCLI ctrl all show | awk '{ print $6 }'`
@@ -114,6 +113,9 @@ deb-src http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free" 
 UUID_BOOT=`$BLKID -t LABEL=boot -o list | awk ' $3 ~ "boot" {print $5}'`
 UUID_SWAP=`$BLKID -t LABEL=swap -o list | awk ' $3 ~ "swap" {print $6}'`
 UUID_SLASH=`$BLKID -t LABEL=slash -o list | awk ' $3 ~ "slash" {print $5}'`
+echo "boot: "${UUID_BOOT}
+echo "swap: "${UUID_SWAP}
+echo "slash: "${UUID_SLASH}
 
 	echo "UUID=${UUID_BOOT} /boot	ext3	defaults			0 1
 UUID=${UUID_SWAP} none	swap	sw				0 0
