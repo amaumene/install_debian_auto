@@ -115,7 +115,10 @@ deb-src http://security.debian.org/ squeeze/updates main contrib non-free
 
 # squeeze-updates, previously known as 'volatile'
 deb http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free
-deb-src http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free" > $DEST_MOUNT/etc/apt/sources.list
+deb-src http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free
+
+# backports since the squeeze kernel don't support RAID cards in Gen8 servers
+deb http://backports.debian.org/debian-backports squeeze-backports main" > $DEST_MOUNT/etc/apt/sources.list
 
 	echo "UUID=$($BLKID -o value -s UUID $DEV_BOOT) /boot	ext3	defaults			0 1
 UUID=$($BLKID -o value -s UUID $DEV_SWAP) none	swap	sw				0 0
@@ -128,7 +131,8 @@ kernel_grub () {
     mount -o bind /dev $DEST_MOUNT/dev
     mount -o bind /sys $DEST_MOUNT/sys
     chroot $DEST_MOUNT aptitude update
-    DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install linux-image-amd64 firmware-bnx2 grub-pc openssh-server locales -y
+    DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install -t squeeze-backports firmware-bnx2 linux-image-2.6-amd64 -y
+    DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install grub-pc openssh-server locales -y
     chroot $DEST_MOUNT grub-install --recheck --no-floppy /dev/sda
     chroot $DEST_MOUNT grub-mkconfig -o /boot/grub/grub.cfg
     chroot $DEST_MOUNT echo "root:toto" | chpasswd
