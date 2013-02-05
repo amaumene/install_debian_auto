@@ -91,13 +91,15 @@ custom () {
     DEV_SLASH="/dev/sda4"
 
 	# configure loopback
-	echo -e "auto lo\niface lo inet loopback" > $DEST_MOUNT/etc/network/interfaces
+	echo "auto lo
+iface lo inet loopback" > $DEST_MOUNT/etc/network/interfaces
 
 	# configure all interfaces to dhcp
 	i=0
-	while [ $i -ne "$(ip l | grep state | wc -l)" ]
+	while [ $i -ne "$(ifconfig | grep eth | wc -l)" ]
 	do
-		echo -e "allow-hotplug eth$i\niface eth$i inet dhcp" >> $DEST_MOUNT/etc/network/interfaces
+		echo "allow-hotplug eth$i
+iface eth$i inet dhcp" >> $DEST_MOUNT/etc/network/interfaces
 		i=`expr $i + 1`
 	done
 
