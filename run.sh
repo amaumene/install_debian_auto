@@ -3,6 +3,7 @@
 set -x
 
 delete_raid_hp () {
+    modprobe sg
 	HPACUCLI="hpacucli"
 	ID=`$HPACUCLI ctrl all show | awk '{ print $6 }'`
 	for SLOT in $ID;
@@ -15,6 +16,7 @@ delete_raid_hp () {
 }
 
 create_raid_hp () {
+    modprobe sg
 	RAID_LVL="1+0"
 	HPACUCLI="hpacucli"
 	ID=`$HPACUCLI ctrl all show | awk '{ print $6 }'`
