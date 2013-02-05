@@ -1,4 +1,7 @@
 #!/bin/sh
+
+set -x
+
 delete_raid_hp () {
 	HPACUCLI="hpacucli"
 	ID=`$HPACUCLI ctrl all show | awk '{ print $6 }'`
@@ -27,18 +30,18 @@ create_raid_hp () {
 }
 
 partitions () {
-	DEV=/dev/cciss/c0d0
+	DEV=/dev/sda
 	TYPE=gpt
 	PARTED=parted
 	BOOT=515
 	SWAP=16000
 	SLASH=30000
     # be sure to wipe gpt out
-    SIZE=`cat /sys/block/cciss\!c0d0/size`
+    SIZE=`cat /sys/block/sda/size`
     SKIP=`expr $SIZE - 34`
-    BLOCK=`cat /sys/block/cciss\!c0d0/queue/physical_block_size`
-    dd if=/dev/zero of=/dev/cciss/c0d0 bs=$BLOCK count=34
-    dd if=/dev/zero of=/dev/cciss/c0d0 bs=$BLOCK count=34 skip=$SKIP
+    BLOCK=`cat /sys/block/sda/queue/physical_block_size`
+    dd if=/dev/zero of=/dev/sda bs=$BLOCK count=34
+    dd if=/dev/zero of=/dev/sda bs=$BLOCK count=34 skip=$SKIP
 	$PARTED $DEV --script -- mklabel $TYPE
     $PARTED $DEV --script -- mkpart primary ext2 1 3
     $PARTED $DEV --script -- name 1 bios_grub
@@ -53,9 +56,9 @@ partitions () {
 }
 
 filesystems () {
-	DEV_BOOT="/dev/cciss/c0d0p2"
-	DEV_SWAP="/dev/cciss/c0d0p3"
-	DEV_SLASH="/dev/cciss/c0d0p4"
+	DEV_BOOT="/dev/sda2"
+	DEV_SWAP="/dev/sda3"
+	DEV_SLASH="/dev/sda4"
 	MKEXT3="mkfs.ext3"
 	MKEXT4="mkfs.ext4"
 	MKSWAP="mkswap"
@@ -83,9 +86,9 @@ install () {
 custom () {
 	DEST_MOUNT="/mnt"
 	BLKID="blkid"
-    DEV_BOOT="/dev/cciss/c0d0p2"
-    DEV_SWAP="/dev/cciss/c0d0p3"
-    DEV_SLASH="/dev/cciss/c0d0p4"
+    DEV_BOOT="/dev/sda2"
+    DEV_SWAP="/dev/sda3"
+    DEV_SLASH="/dev/sda4"
 
 	# configure loopback
 	echo -e "auto lo\niface lo inet loopback" > $DEST_MOUNT/etc/network/interfaces
@@ -126,7 +129,7 @@ kernel_grub () {
     mount -o bind /sys $DEST_MOUNT/sys
     chroot $DEST_MOUNT aptitude update
     DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install linux-image-amd64 firmware-bnx2 grub-pc openssh-server locales -y
-    chroot $DEST_MOUNT grub-install --recheck --no-floppy /dev/cciss/c0d0
+    chroot $DEST_MOUNT grub-install --recheck --no-floppy /dev/sda
     chroot $DEST_MOUNT grub-mkconfig -o /boot/grub/grub.cfg
     chroot $DEST_MOUNT echo "root:toto" | chpasswd
     sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' $DEST_MOUNT/etc/locale.gen
