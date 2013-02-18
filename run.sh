@@ -8,7 +8,7 @@ delete_raid_hp () {
 	ID=`$HPACUCLI ctrl all show | awk '{ print $6 }'`
 	for SLOT in $ID;
 	do
-		for LD in $($HPACUCLI ctrl slot=0 ld all show | awk '$1 ~ "logical" { print $2}');
+		for LD in $($HPACUCLI ctrl slot=$SLOT ld all show | awk '$1 ~ "logical" { print $2}');
  		do
 			echo "y" | $HPACUCLI ctrl slot=$SLOT ld $LD delete
 		done
