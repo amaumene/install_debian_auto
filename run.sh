@@ -165,5 +165,3 @@ install
 custom
 kernel_grub
 unmount
-
-reboot
