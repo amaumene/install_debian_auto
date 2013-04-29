@@ -99,9 +99,9 @@ custom () {
     #DEV_BOOT="/dev/sda2"
     #DEV_SWAP="/dev/sda3"
     #DEV_SLASH="/dev/sda4"
-    DEV_BOOT="/dev/sda2"
-    DEV_SWAP="/dev/sda3"
-    DEV_SLASH="/dev/sda4" 
+    DEV_BOOT="/dev/cciss/c0d0p2"
+    DEV_SWAP="/dev/cciss/c0d0p3"
+    DEV_SLASH="/dev/cciss/c0d0p4"
 
 	# configure loopback
 	echo "auto lo
@@ -177,3 +177,5 @@ install
 custom
 kernel_grub
 unmount
+
+reboot
