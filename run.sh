@@ -146,7 +146,8 @@ kernel_grub () {
     mount -o bind /dev $DEST_MOUNT/dev
     mount -o bind /sys $DEST_MOUNT/sys
     chroot $DEST_MOUNT aptitude update
-    DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install -t squeeze-backports firmware-bnx2 linux-image-2.6-amd64 -y
+    #DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install -t squeeze-backports firmware-bnx2 linux-image-2.6-amd64 -y
+    DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install firmware-bnx2 linux-image-2.6-amd64 -y
     DEBIAN_FRONTEND=noninteractive chroot $DEST_MOUNT aptitude install grub-pc openssh-server locales -y
     #chroot $DEST_MOUNT grub-install --recheck --no-floppy /dev/sda
     chroot $DEST_MOUNT grub-install --recheck --no-floppy /dev/cciss/c0d0
